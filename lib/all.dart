@@ -17,9 +17,9 @@ class _AllState extends State<All> {
   List<dynamic> notes = [];
   var box = Hive.box('database');
   List<dynamic> todolist = [];
-  final TextEditingController _newtitle = TextEditingController();
-  final TextEditingController _newnotes = TextEditingController();
-  final TextEditingController _search = TextEditingController();
+  TextEditingController _newtitle = TextEditingController();
+  TextEditingController _newnotes = TextEditingController();
+  TextEditingController _search = TextEditingController();
   String search_note = "";
   DateTime now = DateTime.now();
   String created = DateFormat('M/d/yy').format(DateTime.now());
@@ -88,7 +88,7 @@ class _AllState extends State<All> {
                   Row(
                     children: [
                       Text(
-                        foldertitle,
+                        '$foldertitle',
                         style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.w700,
@@ -203,10 +203,10 @@ class _AllState extends State<All> {
                                 .length) -
                         1;
 
-                    TextEditingController title = TextEditingController(
+                    TextEditingController _title = TextEditingController(
                       text: items['title'],
                     );
-                    TextEditingController notes = TextEditingController(
+                    TextEditingController _notes = TextEditingController(
                       text: items['notes'],
                     );
 
@@ -215,7 +215,7 @@ class _AllState extends State<All> {
                       if (words.length <= wordLimit) {
                         return text;
                       }
-                      return '${words.take(wordLimit).join(' ')}...';
+                      return words.take(wordLimit).join(' ') + '...';
                     }
 
                     return GestureDetector(
@@ -258,8 +258,8 @@ class _AllState extends State<All> {
                                       ),
                                       onPressed: () {
                                         setState(() {
-                                          items['title'] = title.text;
-                                          items['notes'] = notes.text;
+                                          items['title'] = _title.text;
+                                          items['notes'] = _notes.text;
 
                                           box.put('note', items);
 
@@ -283,7 +283,7 @@ class _AllState extends State<All> {
                                         child: Column(
                                           children: [
                                             CupertinoTextField(
-                                              controller: title,
+                                              controller: _title,
                                               style: TextStyle(
                                                 fontSize: 24,
                                                 fontWeight: FontWeight.bold,
@@ -299,7 +299,7 @@ class _AllState extends State<All> {
 
                                             Expanded(
                                               child: CupertinoTextField(
-                                                controller: notes,
+                                                controller: _notes,
                                                 style: TextStyle(fontSize: 16),
                                                 maxLines: null,
                                                 expands: true,
@@ -322,7 +322,182 @@ class _AllState extends State<All> {
                         );
                       },
 
-                      onLongPress: () { },
+                      onLongPress: () {
+                        showCupertinoModalPopup(
+                          context: context,
+                          builder:
+                              (BuildContext context) => Padding(
+                                padding: const EdgeInsets.all(8.0),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    CupertinoActionSheet(
+                                      title: Column(
+                                        children: [
+                                          Container(
+                                            height: 200,
+                                            width: double.maxFinite,
+
+                                            child: CupertinoTextField(
+                                              controller: _notes,
+                                              style: TextStyle(fontSize: 16),
+                                              maxLines: null,
+                                              expands: true,
+                                              textAlignVertical:
+                                                  TextAlignVertical.top,
+                                              decoration: BoxDecoration(
+                                                color: Colors.transparent,
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+
+                                      actions: <CupertinoActionSheetAction>[
+                                        CupertinoActionSheetAction(
+                                          onPressed: () {
+                                            Navigator.pop(context);
+                                            showCupertinoDialog(
+                                              context: context,
+                                              builder: (context) {
+                                                return CupertinoAlertDialog(
+
+                                                  title: Padding(
+                                                    padding: const EdgeInsets.fromLTRB(0,0,0,5),
+                                                    child: Text('Choose Folder', style: TextStyle(fontSize: 17),),
+                                                  ),
+                                                  content: Column(
+                                                    children: [
+                                                      for (var item in todolist)
+                                                        item['title'] !=
+                                                                    foldertitle &&
+                                                                item['title'] !=
+                                                                    'Recently Deleted' &&
+                                                                item['title'] !=
+                                                                    'Archives'
+                                                            ? Padding(
+                                                              padding: const EdgeInsets.fromLTRB(0,2,0,2),
+                                                              child: Container(
+                                                                width: double.maxFinite,
+                                                                decoration: BoxDecoration(
+                                                                    color: CupertinoColors.systemFill
+                                                                ),
+                                                                child: CupertinoButton(
+                                                                  child: Text(
+                                                                    item['title'],
+                                                                    style: TextStyle(
+                                                                      color:
+                                                                          CupertinoColors
+                                                                              .white,fontSize: 17
+                                                                    ),
+                                                                  ),
+                                                                  onPressed: () {
+                                                                    setState(() {
+                                                                      setState(() {
+                                                                        items['folder'] =
+                                                                            item['title'];
+                                                                      });
+                                                                      box.put(
+                                                                        'notes',
+                                                                        items,
+                                                                      );
+                                                                    });
+                                                                    Navigator.pop(
+                                                                      context,
+                                                                    );
+                                                                  },
+                                                                ),
+                                                              ),
+                                                            )
+                                                            : SizedBox.shrink(),
+                                                    ],
+                                                  ),
+                                                  actions: [
+                                                    CupertinoButton(
+                                                      child: Text(
+                                                        "Cancel",
+                                                        style: TextStyle(
+                                                          color:
+                                                              CupertinoColors
+                                                                  .destructiveRed,fontSize: 17
+                                                        ),
+                                                      ),
+                                                      onPressed: () {
+                                                        Navigator.pop(context);
+                                                      },
+                                                    ),
+                                                  ],
+                                                );
+                                              },
+                                            );
+                                          },
+                                          child: const Text(
+                                            'Move',
+                                            style: TextStyle(
+                                              color: CupertinoColors.white,
+                                              fontSize: 17,
+                                            ),
+                                          ),
+                                        ),
+
+                                        CupertinoActionSheetAction(
+                                          onPressed: () {
+                                            setState(() {
+                                              items['folder'] = "Archives";
+                                            });
+                                            box.put('notes', items);
+                                            Navigator.pop(context);
+                                          },
+                                          child: const Text(
+                                            'Archive',
+                                            style: TextStyle(
+                                              color: CupertinoColors.white,
+                                              fontSize: 17,
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+
+                                      cancelButton: CupertinoActionSheetAction(
+                                        onPressed: () {
+                                          if (items['folder'] !=
+                                              "Recently Deleted") {
+                                            setState(() {
+                                              items['folder'] =
+                                                  "Recently Deleted";
+                                            });
+                                            box.put('notes', items);
+                                            print('success recent');
+                                          } else {
+                                            setState(() {
+                                              notes.removeWhere(
+                                                (item) =>
+                                                    item['title'] ==
+                                                        items['title'] &&
+                                                    item['notes'] ==
+                                                        items['notes'],
+                                              );
+                                            });
+                                            box.put('notes', notes);
+                                            print('success delete');
+                                          }
+
+                                          Navigator.pop(context);
+                                        },
+                                        isDestructiveAction: true,
+                                        child: const Text(
+                                          'Delete',
+                                          style: TextStyle(fontSize: 17),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                        );
+                      },
 
                       child: Container(
                         decoration: BoxDecoration(
@@ -391,7 +566,122 @@ class _AllState extends State<All> {
                       CupertinoIcons.square_pencil,
                       color: CupertinoColors.systemYellow,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                          builder:
+                              (context) => CupertinoPageScaffold(
+                                navigationBar: CupertinoNavigationBar(
+                                  leading: Row(
+                                    children: [
+                                      CupertinoButton(
+                                        padding: EdgeInsets.zero,
+                                        child: Icon(
+                                          CupertinoIcons.chevron_back,
+                                          color: CupertinoColors.systemYellow,
+                                        ),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                      Text(
+                                        'Notes',
+                                        style: TextStyle(
+                                          color: CupertinoColors.systemYellow,
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  trailing: CupertinoButton(
+                                    padding: EdgeInsets.zero,
+                                    child: Text(
+                                      'Done',
+                                      style: TextStyle(color: Colors.yellow),
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        notes.add({
+                                          'title': _newtitle.text,
+                                          'notes': _newnotes.text,
+                                          'date': created,
+                                          'folder': foldertitle,
+                                          'status': true,
+                                          'deleted': false,
+                                          'deleted_date': "",
+                                        });
+                                        box.put('note', notes);
+                                        _newtitle.text = "";
+                                        _newnotes.text = "";
+
+                                        setState(() {
+                                          notes = [];
+                                        });
+                                        try {
+                                          notes = box.get('note');
+                                        } catch (e) {
+                                          notes = [];
+                                        }
+                                        Navigator.pop(context);
+                                      });
+                                    },
+                                  ),
+                                ),
+                                child: SafeArea(
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                      20,
+                                      5,
+                                      20,
+                                      5,
+                                    ),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: CupertinoColors.black,
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          CupertinoTextField(
+                                            controller: _newtitle,
+                                            style: TextStyle(
+                                              fontSize: 24,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            textInputAction:
+                                                TextInputAction.next,
+                                            decoration: BoxDecoration(
+                                              color: CupertinoColors.black,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                          ),
+
+                                          Expanded(
+                                            child: CupertinoTextField(
+                                              controller: _newnotes,
+                                              style: TextStyle(fontSize: 16),
+                                              maxLines: null,
+                                              expands: true,
+                                              textAlignVertical:
+                                                  TextAlignVertical.top,
+                                              decoration: BoxDecoration(
+                                                color: CupertinoColors.black,
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
