@@ -3,6 +3,8 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:notes/all.dart';
+import 'package:notes/notes.dart';
 import 'variables.dart';
 import 'dart:async';
 
@@ -56,12 +58,12 @@ class _MyAppState extends State<MyApp> {
   List<dynamic> todolist = [];
 
   List<dynamic> notesdata = [];
-  final TextEditingController _newtitle = TextEditingController();
-  final TextEditingController _newnotes = TextEditingController();
+  TextEditingController _newtitle = TextEditingController();
+  TextEditingController _newnotes = TextEditingController();
   DateTime now = DateTime.now();
   String created = DateFormat('M/d/yy').format(DateTime.now());
-  final TextEditingController _search = TextEditingController();
-  final TextEditingController _newfolder = TextEditingController();
+  TextEditingController _search = TextEditingController();
+  TextEditingController _newfolder = TextEditingController();
   String seach_input = "";
   bool activity = true;
 
@@ -441,7 +443,23 @@ class _MyAppState extends State<MyApp> {
                                 .length;
 
                     return GestureDetector(
-                      onTap: () { },
+                      onTap: () {
+                        setState(() {
+                          foldertitle = item['title'];
+                        });
+
+                        if (foldertitle == "All iCloud") {
+                          Navigator.pushReplacement(
+                            context,
+                            CupertinoPageRoute(builder: (context) => All()),
+                          );
+                        } else {
+                          Navigator.pushReplacement(
+                            context,
+                            CupertinoPageRoute(builder: (context) => Notes()),
+                          );
+                        }
+                      },
 
                       onLongPress: () {
                         if (item['default'] == false) {
