@@ -16,11 +16,11 @@ class Notes extends StatefulWidget {
 class _NotesState extends State<Notes> {
   List<dynamic> notes = [];
   var box = Hive.box('database');
-  final TextEditingController _newtitle = TextEditingController();
-  final TextEditingController _newnotes = TextEditingController();
+  TextEditingController _newtitle = TextEditingController();
+  TextEditingController _newnotes = TextEditingController();
   DateTime now = DateTime.now();
   String created = DateFormat('M/d/yy').format(DateTime.now());
-  final TextEditingController _search = TextEditingController();
+  TextEditingController _search = TextEditingController();
   String search_note = "";
   List<dynamic> todolist = [];
 
@@ -84,7 +84,7 @@ class _NotesState extends State<Notes> {
                   Row(
                     children: [
                       Text(
-                        foldertitle,
+                        '$foldertitle',
                         style: TextStyle(
                           fontSize: 30,
                           fontWeight: FontWeight.w700,
@@ -174,10 +174,10 @@ class _NotesState extends State<Notes> {
 
                     int lastIndex = filteredNotes.length - 1;
 
-                    TextEditingController title = TextEditingController(
+                    TextEditingController _title = TextEditingController(
                       text: items['title'],
                     );
-                    TextEditingController notes = TextEditingController(
+                    TextEditingController _notes = TextEditingController(
                       text: items['notes'],
                     );
 
@@ -186,7 +186,7 @@ class _NotesState extends State<Notes> {
                       if (words.length <= wordLimit) {
                         return text;
                       }
-                      return '${words.take(wordLimit).join(' ')}...';
+                      return words.take(wordLimit).join(' ') + '...';
                     }
 
                     return GestureDetector(
@@ -229,8 +229,8 @@ class _NotesState extends State<Notes> {
                                       ),
                                       onPressed: () {
                                         setState(() {
-                                          items['title'] = title.text;
-                                          items['notes'] = notes.text;
+                                          items['title'] = _title.text;
+                                          items['notes'] = _notes.text;
 
                                           box.put('note', items);
 
@@ -254,7 +254,7 @@ class _NotesState extends State<Notes> {
                                         child: Column(
                                           children: [
                                             CupertinoTextField(
-                                              controller: title,
+                                              controller: _title,
                                               style: TextStyle(
                                                 fontSize: 24,
                                                 fontWeight: FontWeight.bold,
@@ -270,7 +270,7 @@ class _NotesState extends State<Notes> {
 
                                             Expanded(
                                               child: CupertinoTextField(
-                                                controller: notes,
+                                                controller: _notes,
                                                 style: TextStyle(fontSize: 16),
                                                 maxLines: null,
                                                 expands: true,
@@ -305,12 +305,12 @@ class _NotesState extends State<Notes> {
                                     CupertinoActionSheet(
                                       title: Column(
                                         children: [
-                                          SizedBox(
+                                          Container(
                                             height: 200,
                                             width: double.maxFinite,
 
                                             child: CupertinoTextField(
-                                              controller: notes,
+                                              controller: _notes,
                                               style: TextStyle(fontSize: 16),
                                               maxLines: null,
                                               expands: true,
