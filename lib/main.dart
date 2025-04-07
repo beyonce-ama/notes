@@ -3,7 +3,6 @@ import 'package:hive/hive.dart';
 import 'package:hive_flutter/adapters.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-
 import 'dart:async';
 
 void main() async {
@@ -311,7 +310,7 @@ class _MyAppState extends State<MyApp> {
                 );
               },
             );
-            },
+          },
         ),
       ),
 
@@ -439,7 +438,77 @@ class _MyAppState extends State<MyApp> {
                                   (data) => data['folder'] == item['title'],
                                 )
                                 .length;
-                       Container(
+
+                    return GestureDetector(
+                      onTap: () { },
+
+                      onLongPress: () {
+                        if (item['default'] == false) {
+                          showCupertinoModalPopup(
+                            context: context,
+                            builder:
+                                (BuildContext context) => Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.all(8.0),
+                                      child: CupertinoActionSheet(
+                                        title: Padding(
+                                          padding: const EdgeInsets.all(20.0),
+                                          child: Icon(
+                                            item['leading']
+                                                ? CupertinoIcons.folder
+                                                : CupertinoIcons.trash,
+                                            color:
+                                                item['leading']
+                                                    ? CupertinoColors
+                                                        .systemYellow
+                                                    : CupertinoColors.systemRed,
+                                            size:
+                                                MediaQuery.sizeOf(
+                                                  context,
+                                                ).width *
+                                                0.40,
+                                          ),
+                                        ),
+
+                                        message: Row(
+                                          children: [
+                                            Text(
+                                              item['title'],
+                                              style: TextStyle(fontSize: 20),
+                                            ),
+                                          ],
+                                        ),
+
+                                        cancelButton:
+                                            CupertinoActionSheetAction(
+                                              onPressed: () {
+                                                setState(() {
+                                                  todolist.removeWhere(
+                                                    (items) =>
+                                                        items['title'] ==
+                                                        item['title'],
+                                                  );
+                                                });
+                                                box.put('todo', todolist);
+                                                Navigator.pop(context);
+                                              },
+                                              isDestructiveAction: true,
+                                              child: const Text(
+                                                'Delete',
+                                                style: TextStyle(fontSize: 17),
+                                              ),
+                                            ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                          );
+                        }
+                      },
+
+                      child: Container(
                         decoration: BoxDecoration(
                           color: CupertinoColors.systemFill,
                         ),
@@ -472,9 +541,8 @@ class _MyAppState extends State<MyApp> {
                             color: CupertinoColors.systemGrey,
                           ),
                         ),
-                    
+                      ),
                     );
-                       return null;
                   },
                 ),
               ),
@@ -571,7 +639,122 @@ class _MyAppState extends State<MyApp> {
                       CupertinoIcons.square_pencil,
                       color: CupertinoColors.systemYellow,
                     ),
-                    onPressed: () { },
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                          builder:
+                              (context) => CupertinoPageScaffold(
+                                navigationBar: CupertinoNavigationBar(
+                                  leading: Row(
+                                    children: [
+                                      CupertinoButton(
+                                        padding: EdgeInsets.zero,
+                                        child: Icon(
+                                          CupertinoIcons.chevron_back,
+                                          color: CupertinoColors.systemYellow,
+                                        ),
+                                        onPressed: () {
+                                          Navigator.pop(context);
+                                        },
+                                      ),
+                                      Text(
+                                        'Notes',
+                                        style: TextStyle(
+                                          color: CupertinoColors.systemYellow,
+                                          fontSize: 18,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  trailing: CupertinoButton(
+                                    padding: EdgeInsets.zero,
+                                    child: Text(
+                                      'Done',
+                                      style: TextStyle(color: Colors.yellow),
+                                    ),
+                                    onPressed: () {
+                                      setState(() {
+                                        notes.add({
+                                          'title': _newtitle.text,
+                                          'notes': _newnotes.text,
+                                          'date': created,
+                                          'folder': 'Notes',
+                                          'status': true,
+                                          'deleted': false,
+                                          'deleted_date': "",
+                                        });
+                                        box.put('note', notes);
+                                        _newtitle.text = "";
+                                        _newnotes.text = "";
+
+                                        setState(() {
+                                          notes = [];
+                                        });
+                                        try {
+                                          notes = box.get('note');
+                                        } catch (e) {
+                                          notes = [];
+                                        }
+                                        Navigator.pop(context);
+                                      });
+                                    },
+                                  ),
+                                ),
+                                child: SafeArea(
+                                  child: Padding(
+                                    padding: const EdgeInsets.fromLTRB(
+                                      20,
+                                      5,
+                                      20,
+                                      5,
+                                    ),
+                                    child: Container(
+                                      decoration: BoxDecoration(
+                                        color: CupertinoColors.black,
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          CupertinoTextField(
+                                            controller: _newtitle,
+                                            style: TextStyle(
+                                              fontSize: 24,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                            textInputAction:
+                                                TextInputAction.next,
+                                            decoration: BoxDecoration(
+                                              color: CupertinoColors.black,
+                                              borderRadius:
+                                                  BorderRadius.circular(10),
+                                            ),
+                                          ),
+
+                                          Expanded(
+                                            child: CupertinoTextField(
+                                              controller: _newnotes,
+                                              style: TextStyle(fontSize: 16),
+                                              maxLines: null,
+                                              expands: true,
+                                              textAlignVertical:
+                                                  TextAlignVertical.top,
+                                              decoration: BoxDecoration(
+                                                color: CupertinoColors.black,
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                        ),
+                      );
+                    },
                   ),
                 ],
               ),
