@@ -113,7 +113,205 @@ class _MyAppState extends State<MyApp> {
             CupertinoIcons.person,
             color: CupertinoColors.systemYellow,
           ),
-          onPressed: () {},
+          onPressed: () {
+            showCupertinoDialog(
+              context: context,
+              builder: (context) {
+                return CupertinoAlertDialog(
+                  title: Padding(
+                    padding: EdgeInsets.fromLTRB(0, 0, 0, 10),
+                    child: Text(
+                      'Development Team',
+                      style: TextStyle(
+                        color: CupertinoColors.white,
+                        fontWeight: FontWeight.w500,
+                        fontSize: 16,
+                      ),
+                    ),
+                  ),
+                  content: Column(
+                    children: [
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: CupertinoColors.systemFill,
+                          ),
+                          child: Row(
+                            children: [
+                              Image.asset(
+                                "images/beyonce.jpg",
+                                height: 60,
+                                width: 60,
+                                fit: BoxFit.fill,
+                              ),
+                              SizedBox(width: 15),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Ama Beyonce",
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                  Text(
+                                    "Software Developer",
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: CupertinoColors.systemFill,
+                          ),
+                          child: Row(
+                            children: [
+                              Image.asset(
+                                "images/bulanadi.jpeg",
+                                height: 60,
+                                width: 60,
+                                fit: BoxFit.fill,
+                              ),
+                              SizedBox(width: 15),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Bulanadi, Jhon Vianney",
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                  Text(
+                                    "Software Developer",
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: CupertinoColors.systemFill,
+                          ),
+                          child: Row(
+                            children: [
+                              Image.asset(
+                                "images/culala.jpg",
+                                height: 60,
+                                width: 60,
+                                fit: BoxFit.fill,
+                              ),
+                              SizedBox(width: 15),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Culala, Andrea",
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                  Text(
+                                    "Software Developer",
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: CupertinoColors.systemFill,
+                          ),
+                          child: Row(
+                            children: [
+                              Image.asset(
+                                "images/jc.jpg",
+                                height: 60,
+                                width: 60,
+                                fit: BoxFit.fill,
+                              ),
+                              SizedBox(width: 15),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Dizon, John Carlo V",
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                  Text(
+                                    "Software Developer",
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 5),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(10),
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: CupertinoColors.systemFill,
+                          ),
+                          child: Row(
+                            children: [
+                              Image.asset(
+                                "images/timbol.jpg",
+                                height: 60,
+                                width: 60,
+                                fit: BoxFit.fill,
+                              ),
+                              SizedBox(width: 15),
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    "Timbol, Christian",
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                  Text(
+                                    "Software Developer",
+                                    style: TextStyle(fontSize: 12),
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                  actions: [
+                    CupertinoButton(
+                      child: Text(
+                        'Close',
+                        style: TextStyle(color: CupertinoColors.destructiveRed),
+                      ),
+                      onPressed: () {
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ],
+                );
+              },
+            );
+            },
         ),
       ),
 
